@@ -1,0 +1,3 @@
+==============  Hostel management  ===========
+	1) Admin should be able to add/edit/delete students
+	2) 
