@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project name="HostelManangement" default="build" xmlns="http://nant.sf.net/release/0.86-beta1/nant.xsd">
+
+  <!--Hack to fix nant complaining about the .net 3.5 framework-->
+  <property name="nant.settings.currentframework" value="net-3.5" />
+  <!--Directory/File/Layout information-->
+  <property name="working.dir" value ="."/>
+  <property name="build.dir" value="${working.dir}/build"/>
+  <property name="unit.tests.output.dir" value="${build.dir}/unit_tests_dir"/>
+  <property name="unit.tests.reports.dir" value="${build.dir}/unit_tests_reports"/>
+  <property name="integration.tests.output.dir" value="${build.dir}/integration_tests_dir"/>
+  <property name="integration.tests.reports.dir" value="${build.dir}/integration_tests_reports"/>
+
+  <property name="solution.file" value="${working.dir}\src\HostelManagement.sln"/>
+  <property name="project.config" value="debug"/>
+
+  <!--Load tasks-->
+  <loadtasks assembly="${working.dir}\lib\gallio\Gallio.NAntTasks.dll" />
+
+  <!--Targets to be executed from the command prompt-->
+  <target name="build" depends="run.unit.tests" />
+  <target name="complete" depends="build, run.integration.tests" />
+
+  <target name="create.build.dir.layout" description="Creates the directory structure for the build" >
+    <delete dir="${build.dir}" failonerror="false" />
+    <mkdir dir="${build.dir}" />
+    <mkdir dir="${unit.tests.output.dir}" />
+    <mkdir dir="${integration.tests.output.dir}" />
+    <mkdir dir="${unit.tests.reports.dir}" />
+    <mkdir dir="${integration.tests.reports.dir}" />
+    <echo message="Current Directory: ${project::get-base-directory()}" />
+  </target>
+
+  <target  name="move.files.for.unit.tests" description="Moves the dlls from the bin directories to the build dir for unit tests" depends="compile.source, create.build.dir.layout">
+    <property name = "hm.unit.tests.bin.dir" value="${working.dir}/src/UnitTests/bin/Debug" />
+    <echo message="Moving contents of ${hm.unit.tests.bin.dir} to ${unit.tests.output.dir}" />
+    <copy todir="${unit.tests.output.dir}" flatten="true">
+      <fileset basedir="${hm.unit.tests.bin.dir}">
+        <include name="*.*" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name ="move.files.for.integration.tests" description="Moves the dlls from the bin directories to the build dir for integration tests" depends="compile.source, create.build.dir.layout" >
+    <property name = "hm.integration.tests.bin.dir" value="${working.dir}/src/IntegrationTests/bin/Debug" />
+    <echo message="Moving contents of ${hm.integration.tests.bin.dir} to ${integration.tests.output.dir}" />
+    <copy todir="${integration.tests.output.dir}" flatten="true">
+      <fileset basedir="${hm.integration.tests.bin.dir}">
+        <include name="*.*" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="clean.source" description="Cleans up all the bin directories" >
+    <exec program="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe"
+     commandline="${solution.file} /t:Clean /p:Configuration=${project.config} /v:q" workingdir="." />
+    <echo message="Clean Finished" />
+  </target>
+
+  <target name="compile.source" description="Compiles all the projects"  depends="clean.source">
+    <exec program="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe"
+     commandline="${solution.file} /t:Rebuild /p:Configuration=${project.config} /v:q" workingdir="." />
+    <echo message="Compile Finished" />
+  </target>
+
+  <target name="run.unit.tests" description="Runs just the unit tests for this project" depends="move.files.for.unit.tests">
+    <gallio result-property="exit_code" verbose="true" report-directory="${unit.tests.reports.dir}" report-types="html;xml-inline" failonerror="false" >
+      <assemblies>
+        <include name="${unit.tests.output.dir}\UnitTests.dll" />
+      </assemblies>
+    </gallio>
+    <fail if="${exit_code != '0'}"  message="Execution of unit tests failed!" />
+  </target>
+
+  <target name ="run.integration.tests" description ="Runs the integration tests for this project" depends="move.files.for.integration.tests" >
+    <gallio result-property="exit_code" verbose="true" report-directory="${integration.tests.reports.dir}" report-types="html;xml-inline" failonerror="false" >
+      <assemblies>
+        <include name="${integration.tests.output.dir}\IntegrationTests.dll" />
+      </assemblies>
+    </gallio>
+    <fail if="${exit_code != '0'}"  message="Execution of unit tests failed!" />
+  </target>
+
+</project>

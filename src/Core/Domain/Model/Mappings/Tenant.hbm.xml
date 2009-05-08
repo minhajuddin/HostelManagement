@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" assembly="IntegrationTests" namespace="HostelManagement.Core.Domain">
+  <class name="Tenant" table ="Tenant">
+    <id name="ID" column="ID" type="int" unsaved-value="0">
+      <generator class="native" />
+    </id>
+    <property name ="AdmissionNumber" column="AdmissionNumber" not-null="true" type="string" length="50" />
+    <property name = "FullName" column="FullName" not-null="true" type="string" length="50" />
+    <property name = "FathersName" column="FathersName" not-null="true" type="string" length="50" />
+    <property name = "Address" column="Address" not-null="true" type="string" length="50" />
+    <property name = "RoomNumber" column="RoomNumber" not-null="false" type="string" length="10" />
+    <property name = "Phone" column="Phone" not-null="false" type="string" length="20" />
+    <property name = "IsActive" column="IsActive" not-null="true" type="bool" />
+    <property name = "DateOfJoining" column="DateOfJoining" not-null="false" type="System.DateTime" />
+    <property name = "DateOfBirth" column="DateOfBirth" not-null="true" type="System.DateTime" />
+    <property name = "Timestamp" column="Timestamp" not-null="true" type="System.DateTime" />
+  </class>
+</hibernate-mapping>
