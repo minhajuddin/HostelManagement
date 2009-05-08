@@ -1,3 +1,22 @@
-==============  Hostel management  ===========
-	1) Admin should be able to add/edit/delete students
-	2) 
+		==============  Hostel management  ===========
+	1) Admin should be able to add/edit/delete/deactivate hostlers
+	2) Admin should be able to view all the users
+	3) Admin should be able to add/edit/delete rooms/beds
+	4) Admin should be able to enter the student's rent details
+			Should be able to compute the fine
+			Should be able to print a reciept with the rent details
+	5) Admin should be able to find the pending rent payments by months
+			Should be able to create a letter from a pre-defined template addressed to the pending hostler
+	6) Admin should be able to view the waiting list of future hostlers
+	7) Admin should be able to add future hostlers to the end of the pending list
+	8) Admin should be able to create the monthly reports
+			Money collected per month
+	9) Admin should be able to check hostlers details
+			Money paid in fine
+			Total money paid
+			Name/Address/Contact details
+			All the past payments
+		Reports:
+			Per month => Details => Timestamp, Admission No, Student Name, Rent paid, Fine paid 
+								 => Aggregate of rent paid, fine paid
+								 => Sum of total rent paid and total fine paid
